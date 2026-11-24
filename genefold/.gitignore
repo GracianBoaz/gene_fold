@@ -1,0 +1,46 @@
+# Root gitignore for genefold project
+
+# Python
+backend/venv/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/**/__pycache__/
+backend/.pytest_cache/
+backend/tests/__pycache__/
+api/__pycache__/
+api/app/__pycache__/
+api/app/**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+*.egg
+
+# Environment files (keep .env.example, ignore secrets)
+backend/.env
+frontend/.env
+# Keep .env.production (safe - no secrets)
+!frontend/.env.production
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Vercel
+.vercel/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
