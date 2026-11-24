@@ -1,7 +1,11 @@
 import { useState, useMemo } from 'react'
 import StructureViewer from './StructureViewer'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// In production (Vercel), VITE_API_URL is unset → use relative '' so /api/... calls go to same domain.
+// In local dev, falls back to localhost:8000.
+const API_URL = (import.meta.env.VITE_API_URL !== undefined && import.meta.env.VITE_API_URL !== '')
+  ? import.meta.env.VITE_API_URL
+  : (import.meta.env.DEV ? 'http://localhost:8000' : '');
 
 function App() {
   const [query, setQuery] = useState('');
