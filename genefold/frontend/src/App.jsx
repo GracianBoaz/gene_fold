@@ -466,6 +466,13 @@ function App() {
                   {[
                     { id: 'Overview', label: 'Overview', icon: 'M4 6h16M4 10h16M4 14h16M4 18h16' },
                     { 
+                      id: 'Structure', 
+                      label: '3D Structure', 
+                      badge: structuresData?.structures?.length || 0,
+                      badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+                      icon: 'M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5' 
+                    },
+                    { 
                       id: 'Diseases', 
                       label: 'Diseases & Pathology', 
                       badge: diseaseStats.total,
@@ -478,13 +485,6 @@ function App() {
                       badge: proteinData.sequence?.length ? `${proteinData.sequence.length} aa` : null,
                       badgeColor: 'bg-slate-200 text-slate-700',
                       icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' 
-                    },
-                    { 
-                      id: 'Structure', 
-                      label: '3D Structure', 
-                      badge: structuresData?.structures?.length || 0,
-                      badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-                      icon: 'M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5' 
                     }
                   ].map((tab) => (
                     <button
@@ -763,6 +763,47 @@ function App() {
                         </div>
                       ) : <p className="text-slate-500 italic text-sm">No natural variants found.</p>}
                     </div>
+                  </div>
+                )}
+
+                {/* ===================== STRUCTURE TAB ===================== */}
+                {activeTab === 'Structure' && (
+                  <div className="animate-fade-in space-y-4">
+                    {/* Highlighted Mutation Banner */}
+                    {highlightVariant && (
+                      <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                        <div className="flex items-center gap-3">
+                          <span className="w-3 h-3 rounded-full bg-rose-600 animate-pulse shrink-0"></span>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold uppercase tracking-wider text-rose-800">
+                                Highlighted Pathogenic Mutation:
+                              </span>
+                              <span className="font-mono font-bold text-rose-900 bg-rose-100 px-2 py-0.5 rounded text-xs">
+                                {highlightVariant.change} (pos {highlightVariant.position})
+                              </span>
+                            </div>
+                            {highlightVariant.diseaseName && (
+                              <p className="text-xs text-rose-700 mt-0.5 font-medium">
+                                Disease: <b>{highlightVariant.diseaseName}</b>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => setHighlightVariant(null)} 
+                          className="text-xs bg-white text-rose-700 border border-rose-300 hover:bg-rose-100 px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer self-start sm:self-auto shrink-0 shadow-2xs"
+                        >
+                          Clear Mutation Highlight ✕
+                        </button>
+                      </div>
+                    )}
+
+                    <StructureViewer 
+                      structures={structuresData?.structures} 
+                      highlightVariant={highlightVariant}
+                      onClearHighlight={() => setHighlightVariant(null)}
+                    />
                   </div>
                 )}
 
@@ -1182,47 +1223,6 @@ function App() {
                     <div className="bg-slate-900 text-slate-100 p-6 rounded-2xl overflow-x-auto shadow-inner border border-slate-800 text-xs sm:text-sm font-mono leading-relaxed">
                       {renderSequence()}
                     </div>
-                  </div>
-                )}
-
-                {/* ===================== STRUCTURE TAB ===================== */}
-                {activeTab === 'Structure' && (
-                  <div className="animate-fade-in space-y-4">
-                    {/* Highlighted Mutation Banner */}
-                    {highlightVariant && (
-                      <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-                        <div className="flex items-center gap-3">
-                          <span className="w-3 h-3 rounded-full bg-rose-600 animate-pulse shrink-0"></span>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-bold uppercase tracking-wider text-rose-800">
-                                Highlighted Pathogenic Mutation:
-                              </span>
-                              <span className="font-mono font-bold text-rose-900 bg-rose-100 px-2 py-0.5 rounded text-xs">
-                                {highlightVariant.change} (pos {highlightVariant.position})
-                              </span>
-                            </div>
-                            {highlightVariant.diseaseName && (
-                              <p className="text-xs text-rose-700 mt-0.5 font-medium">
-                                Disease: <b>{highlightVariant.diseaseName}</b>
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <button 
-                          onClick={() => setHighlightVariant(null)} 
-                          className="text-xs bg-white text-rose-700 border border-rose-300 hover:bg-rose-100 px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer self-start sm:self-auto shrink-0 shadow-2xs"
-                        >
-                          Clear Mutation Highlight ✕
-                        </button>
-                      </div>
-                    )}
-
-                    <StructureViewer 
-                      structures={structuresData?.structures} 
-                      highlightVariant={highlightVariant}
-                      onClearHighlight={() => setHighlightVariant(null)}
-                    />
                   </div>
                 )}
               </div>
